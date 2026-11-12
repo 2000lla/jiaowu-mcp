@@ -55,6 +55,10 @@ vim config.local.json           # 填学校的 VPN 地址与入口名称
 
 > 帮我跑 qr_login.py，把二维码给我扫
 
+Windows（尤其 DSH 桌面版）下推荐用一键脚本 `relogin.ps1`：自动选用正常完整性的
+Python、按需从国内镜像下载 chromedriver 并设置环境变量，会话过期后一条命令重新登录。
+原理与踩坑记录见 [docs/windows-deploy.md](docs/windows-deploy.md)。
+
 ### 为什么仍然需要一个浏览器进程
 
 企业微信扫码是标准 OAuth：手机确认后，微信服务器**只会把 code 回跳到显示二维码的那个
@@ -111,6 +115,8 @@ vim config.local.json           # 填学校的 VPN 地址与入口名称
 
 插件是**配置型 bundle**：不写 Host/Client 代码，只插入一条
 `@deepseek-ai/dsh-mcp-client` 配置，以 stdio 方式拉起 `mcp_server.py`。
+
+Windows 部署的完整踩坑记录见 [docs/windows-deploy.md](docs/windows-deploy.md)。
 
 ## 实例：广西农业职业技术大学
 
