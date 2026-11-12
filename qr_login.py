@@ -86,6 +86,7 @@ def capture_qr(d) -> None:
     if not rect or not rect.get("w"):
         raise SystemExit("✗ 没找到企业微信二维码区域")
 
+    core.OUT.mkdir(parents=True, exist_ok=True)
     tmp = core.OUT / "_qr_full.png"
     d.save_screenshot(str(tmp))
     im = Image.open(tmp)
