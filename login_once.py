@@ -155,24 +155,34 @@ def qr_login(d, cfg: dict) -> None:
 
 
 def click_resource(d, cfg: dict) -> None:
+    """打开 VPN 首页并点教务系统入口, 资源列表是异步渲染的, 需要轮询等待。"""
     d.get(cfg["vpn_base"] + "/")
-    time.sleep(3)
     before = set(d.window_handles)
     name = cfg["resource_name"]
-    r = d.execute_script(r"""
-        var name = arguments[0];
-        var els = Array.from(document.querySelectorAll('a,div,li')).filter(function(e){
-            var t = (e.innerText || '').trim();
-            var r = e.getBoundingClientRect();
-            return t && t.length < 40 && t.indexOf(name) >= 0 && r.width > 0;
-        });
-        if (!els.length) return 'no_match';
-        els.sort(function(a,b){ return a.innerText.length - b.innerText.length; });
-        els[0].click();
-        return 'clicked';
-    """, name)
-    print(f"  点击「{name}」: {r}", flush=True)
-    time.sleep(5)
+
+    clicked = "timeout"
+    for _ in range(40):                       # 最多等 20s
+        clicked = d.execute_script(r"""
+            var name = arguments[0];
+            var els = Array.from(document.querySelectorAll('a,div,li')).filter(function(e){
+                var t = (e.innerText || '').trim();
+                var r = e.getBoundingClientRect();
+                return t && t.length < 40 && t.indexOf(name) >= 0 && r.width > 0;
+            });
+            if (!els.length) return 'no_match';
+            els.sort(function(a,b){ return a.innerText.length - b.innerText.length; });
+            els[0].click();
+            return 'clicked';
+        """, name)
+        if clicked == "clicked":
+            break
+        time.sleep(0.5)
+
+    print(f"  点击「{name}」: {clicked}", flush=True)
+    if clicked != "clicked":
+        raise SystemExit(f"✗ VPN 首页没找到入口「{name}」, 请检查 config.local.json")
+
+    time.sleep(4)
     for h in d.window_handles:
         if h not in before:
             d.switch_to.window(h)
@@ -184,7 +194,11 @@ def click_resource(d, cfg: dict) -> None:
 
 
 def jwxt_login(d, cfg: dict) -> bool:
+    in_jwxt = "/jwglxt/" in (d.current_url or "")
     if not d.find_elements(By.ID, "yhm"):
+        if not in_jwxt:
+            print(f"  ✗ 没有进入教务系统: {d.current_url[:90]}", flush=True)
+            return False
         print(f"  ✓ 教务已处于登录态: {d.title.strip()}", flush=True)
         return True
 

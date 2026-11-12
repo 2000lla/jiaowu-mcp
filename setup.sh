@@ -31,7 +31,8 @@ cat <<'TIP'
 
 下一步:
   1. 编辑 config.local.json，填 vpn_base / resource_name
-  2. 扫码登录生成会话:   .venv/bin/python login_once.py
+  2. 扫码登录生成会话:   .venv/bin/python qr_login.py
+     （二维码会存成 outputs/qr_login.png，浏览器在屏幕外不弹窗）
   3. 想接入 DSH:  在 Plugins 里安装 dsh-bundle 目录
      （或用 plugin_manager 的 install_bundle 指向该目录）
   4. 自检:   .venv/bin/python test_mcp.py

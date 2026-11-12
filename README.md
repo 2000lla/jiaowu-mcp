@@ -17,7 +17,8 @@ Python 标准库和 `mcp` 包。浏览器只在首次扫码登录时用一次。
 ├── modules.py           13 项教务查询的纯 HTTP 实现
 ├── fetch_schedule.py    课表核心（分页/字段归一化）
 ├── jwcore.py            纯工具函数：学期推算、节次解析、渲染
-├── login_once.py        扫码 + 账号登录，生成 .session.json（需要浏览器）
+├── qr_login.py          扫码登录，二维码存成图片、浏览器隐藏（生成 .session.json）
+├── login_once.py        同上但窗口可见，排查问题用
 ├── test_mcp.py          stdio 冒烟测试
 ├── setup.sh             初始化环境 + 生成插件 patch
 ├── config.example.json  环境配置模板
@@ -34,12 +35,42 @@ Python 标准库和 `mcp` 包。浏览器只在首次扫码登录时用一次。
 git clone <repo> && cd <repo>
 ./setup.sh                      # 建 venv、装 mcp、生成 config.local.json 和插件 patch
 vim config.local.json           # 填学校的 VPN 地址与入口名称
-.venv/bin/python login_once.py  # 扫码登录（需要浏览器 + 手机企业微信）
+.venv/bin/python qr_login.py    # 二维码会存成图片，扫码即可（见下）
 .venv/bin/python test_mcp.py    # 自检
 ```
 
-`login_once.py` 成功后会把 WebVPN 票据和资源前缀写入 `.session.json`，之后
-MCP 服务直接用这个文件，**不再需要浏览器**。
+## 扫码登录（二维码在终端/图片里，不弹窗）
+
+`qr_login.py` 把企业微信登录二维码**截出来存成图片**，不再弹出浏览器窗口：
+
+```bash
+.venv/bin/python qr_login.py
+# 输出: QR_READY .../outputs/qr_login.png
+```
+
+把这张图片打开、用手机企业微信扫描确认即可。浏览器工作在屏幕外完成，
+用户看不到窗口；登录成功后自动完成教务系统登录并写入 `.session.json`。
+
+在支持图片显示的 agent（如 DeepSeek Harness）里，可以让它读这张图并直接展示：
+
+> 帮我跑 qr_login.py，把二维码给我扫
+
+### 为什么仍然需要一个浏览器进程
+
+企业微信扫码是标准 OAuth：手机确认后，微信服务器**只会把 code 回跳到显示二维码的那个
+浏览器**（`https://<vpn>/login?wechat_login=1&code=...`），WebVPN 服务端没有提供轮询接口。
+所以必须有一个进程接收这次回跳，它可以是隐藏在屏幕外的 Chrome，但无法省掉。
+
+可选的 `--mode`：
+
+| 模式 | 行为 |
+|---|---|
+| `hidden`（默认） | 浏览器窗口移到屏幕外，看不到窗口 |
+| `headless` | 纯无头。**注意：实测企业微信回跳在纯无头下不完成** |
+| `visible` | 正常窗口，调试用 |
+
+`login_once.py` 是同一套流程的可见窗口版本，方便排查问题。
+
 
 ### 配置
 
