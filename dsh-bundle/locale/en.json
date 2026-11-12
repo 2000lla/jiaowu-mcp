@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Jiaowu timetable and queries",
+    "description": "Reads your own timetable, grades, exams and other academic records from the school system over its WebVPN, without a browser. Ask for your schedule, grades or exam times and the agent calls the matching tool. Tools: get_schedule, query_info (13 academic queries such as grades, exams, personal info, class timetable, course confirmation), list_features, session_status, import_session. It stores session cookies in jiaowu/.session.json and never sends them anywhere else; turning the plugin off removes these tools but leaves that file. When the session expires the tools return need_session, and you reconnect by importing a fresh browser cookie with import_session."
+  }
+}

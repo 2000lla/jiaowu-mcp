@@ -1,0 +1,11 @@
+- insert:
+    - id: jiaowu-mcp
+      name: '@deepseek-ai/dsh-mcp-client'
+      config:
+        serverName: jiaowu
+        transport: stdio
+        command: __JIAOWU_DIR__/.venv/bin/python
+        args:
+          - __JIAOWU_DIR__/mcp_server.py
+        cwd: __JIAOWU_DIR__
+        failOnStartupError: true

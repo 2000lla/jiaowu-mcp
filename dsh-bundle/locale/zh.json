@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "教务课表与查询",
+    "description": "通过学校 WebVPN 读取你自己的课表、成绩、考试安排等教务数据，全程不启动浏览器。直接问我「我的课表」「我的成绩」「什么时候考试」，我会调用对应工具。工具包括 get_schedule、query_info（13 项查询：成绩、考试、个人信息、班级课表、选课确认等）、list_features、session_status、import_session。会话凭证存放在 jiaowu/.session.json，只在本机使用、不外发；关闭插件只是移除这些工具，不会删除该文件。会话过期时工具会返回 need_session，用 import_session 导入浏览器里的新 cookie 即可恢复。"
+  }
+}

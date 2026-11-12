@@ -1,0 +1,26 @@
+# 运行环境
+.venv/
+__pycache__/
+*.pyc
+
+# 本地凭证与浏览器状态（绝不提交）
+.session.json
+.session.json.bak
+config.local.json
+.chrome-profile/
+chromedriver-*/
+
+# 抓取结果（含个人数据）
+outputs/
+
+# 由 setup.sh 按本机绝对路径生成
+dsh-bundle/cordis.patch.yml
+
+# 系统
+.DS_Store
+
+# 开发期接口逆向脚本（本地保留，不发布）
+/discover.py
+/analyze_modules.py
+/map_endpoints.py
+/capture_modules.py

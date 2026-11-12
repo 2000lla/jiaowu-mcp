@@ -1,0 +1,5 @@
+{
+  "vpn_base": "https://vpn.example.edu.cn",
+  "resource_name": "教务系统",
+  "jwxt_host": "jwxt.example.edu.cn"
+}
