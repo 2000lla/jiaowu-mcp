@@ -112,6 +112,49 @@ vim config.local.json           # 填学校的 VPN 地址与入口名称
 插件是**配置型 bundle**：不写 Host/Client 代码，只插入一条
 `@deepseek-ai/dsh-mcp-client` 配置，以 stdio 方式拉起 `mcp_server.py`。
 
+## 实例：广西农业职业技术大学
+
+本项目就是在这套环境下开发和验证的，可作为接入其他学校的参照。
+
+`config.local.json`：
+
+```json
+{
+  "vpn_base": "https://vpn.gxnzd.com.cn",
+  "resource_name": "教务系统",
+  "jwxt_host": "jwxt.gxnzd.com.cn"
+}
+```
+
+接入特征：
+
+| 项 | 情况 |
+|---|---|
+| WebVPN | 网瑞达「资源访问控制系统」，企业微信扫码登录 |
+| 资源入口 | VPN 首页卡片文字为「教务系统」，点击进入正方教务系统 |
+| 教务系统 | `jwxt.gxnzd.com.cn`，外网有 WAF 白名单，只能经 VPN 访问 |
+| 二次登录 | 进入后仍需学号 + 密码（无 RSA，表单带 `csrftoken`） |
+| 学生端「信息查询」 | 共 14 项，本项目实现 13 项 |
+
+该实例下各功能对应的接口（换学校时需要重新抓取）：
+
+| 功能 | gnmkdm | 数据接口 |
+|---|---|---|
+| 个人课表 | N2151 | `/kbcx/xskbcx_cxXsKb.html` |
+| 按周次课表 | N2154 | `/kbcx/xskbcxMobile_cxXsKb.html` |
+| 班级课表 | N214505 | `/kbdy/bjkbdy_cxBjkbdyTjkbList.html` |
+| 学生成绩 | N305005 | `/cjcx/cjcx_cxXsgrcj.html?doType=query` |
+| 成绩总表 | N558020 | `/bysxxcx/xscjzbdy_cxXscjzbdyIndex.html?doType=query` |
+| 考试信息 | N358105 | `/kwgl/kscx_cxXsksxxIndex.html?doType=query` |
+| 结业换证考试 | N581035 | `/jyhzgl/ksxxcx_cxXsksxxIndex.html?doType=query` |
+| 个人信息 | N100801 | 直接解析页面 HTML |
+| 学籍预警 | N105505 | `/xjyj/xjyj_cxXjyjList.html` |
+| 学业预警处理 | N305516 | `/xyyjjk/xyyjclcx_cxXyyjclcxxsList.html` |
+| 学业情况 | N105515 | `/xsxy/xsxyqk_cxJxzxjhxfyqKcxx.html` |
+| 选课确认 | N2158 | `/kbcx/xskbqr_cxZjxbxx.html` |
+| 空闲教室 | N2155 | `/cdjy/cdjy_cxAtyycdSchedule.html` |
+| 创新创业报名 | N4755 | 学生账号无权限 |
+
 ## 安全说明
 
 - `.session.json` 等同于你教务系统的登录态，**不要提交、不要外传**。
